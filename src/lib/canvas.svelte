@@ -6,6 +6,8 @@
 
 	let c: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D;
+	let c2: HTMLCanvasElement;
+	let ctx2: CanvasRenderingContext2D;
 
 	let sprite_w = 0;
 	let sprite_h = 0;
@@ -42,8 +44,10 @@
 	});
 
 	onMount(() => {
-		c = document.querySelector('canvas')!;
+		c = document.querySelector('#canvas_1')!;
+		c2 = document.querySelector('#canvas_2')!;
 		ctx = c.getContext('2d')!;
+		ctx2 = c2.getContext('2d')!;
 
 		function updateSize() {
 			c.width = image.naturalWidth;
@@ -95,7 +99,42 @@
 
 		anim();
 	});
+
+	let x = 0;
+	function revert() {
+		x--;
+		c2.width = image.naturalWidth;
+		c2.height = image.naturalHeight;
+		ctx2.rect(0, 0, c2.width, c2.height);
+
+		ctx2.save();
+		ctx2.translate(sprite_w, 0);
+		ctx2.scale(-1, 1);
+
+		for (let x = 0; x <= 12; x++) {
+			for (let y = 0; y <= 11; y++) {
+				ctx2.drawImage(
+					image,
+					sprite_w * x,
+					y * sprite_h,
+					sprite_w,
+					sprite_h,
+					-sprite_w * x,
+					y * sprite_h,
+					sprite_w,
+					sprite_h
+				);
+			}
+		}
+
+		ctx2.restore();
+		requestAnimationFrame(revert);
+	}
 </script>
 
-<h2 class="text-slate-800">Image {c?.width} / {c?.height}</h2>
-<canvas />
+<div>
+	<h2 class="text-slate-800">Image {c?.width} / {c?.height}</h2>
+	<button on:click={revert}>revert</button>
+</div>
+<canvas id="canvas_1" />
+<canvas id="canvas_2" />

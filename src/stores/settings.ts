@@ -16,13 +16,13 @@ type Stats = {
 };
 
 export const settings = writable<Settings>({
-	spriteHeight: '',
-	spriteWidth: '',
+	spriteHeight: '133',
+	spriteWidth: '112',
 	xOffset: '0',
 	globalXOffset: '0',
 	yOffset: '0',
 	gridSize: '20',
-	repeat: false
+	repeat: true
 });
 
 export const getSettings = derived(settings, (s) => s);

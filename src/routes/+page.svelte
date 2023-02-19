@@ -19,14 +19,9 @@
 		}
 	}
 
-	function setUploaderGone() {
-		console.log('ON TRANS END');
-		uploaderGone = true;
-	}
-
 	onMount(() => {
 		// image = document.createElement('img');
-		// image.src = 'https://dark-woods.vercel.app/assets/player_idle_right.png';
+		// image.src = 'http://127.0.0.1:5173/assets/red_hood_left.png';
 	});
 </script>
 
