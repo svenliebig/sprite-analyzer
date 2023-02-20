@@ -43,6 +43,9 @@
 		}
 	});
 
+	let spritesCountX = 0;
+	let spritesCountY = 0;
+
 	onMount(() => {
 		c = document.querySelector('#canvas_1')!;
 		c2 = document.querySelector('#canvas_2')!;
@@ -64,10 +67,14 @@
 				ctx.strokeStyle = 'red';
 
 				if ($settings.repeat) {
+					spritesCountX = 0;
+					spritesCountY = 0;
 					for (let y = 1; y + yOffset + sprite_h - 2 < c.height; y += sprite_h) {
+						spritesCountY++;
 						let xc = 0;
 						for (let x = 1; x + xOffset + sprite_w - 2 < c.width; x += sprite_w) {
 							xc++;
+							spritesCountX = xc > spritesCountX ? xc : spritesCountX;
 							if (x === 1 && globalXOffset != null) {
 								ctx.strokeRect(globalXOffset * xc + x, yOffset + y, sprite_w - 2, sprite_h - 2);
 							} else {
@@ -76,6 +83,8 @@
 						}
 					}
 				} else {
+					spritesCountX = 0;
+					spritesCountY = 0;
 					ctx.strokeRect(1 + xOffset, 1 + yOffset, sprite_w - 2, sprite_h - 2);
 				}
 				ctx.restore();
@@ -111,8 +120,8 @@
 		ctx2.translate(sprite_w, 0);
 		ctx2.scale(-1, 1);
 
-		for (let x = 0; x <= 12; x++) {
-			for (let y = 0; y <= 11; y++) {
+		for (let x = 0; x <= spritesCountX; x++) {
+			for (let y = 0; y <= spritesCountY; y++) {
 				ctx2.drawImage(
 					image,
 					sprite_w * x,
@@ -132,9 +141,21 @@
 	}
 </script>
 
-<div>
-	<h2 class="text-slate-800">Image {c?.width} / {c?.height}</h2>
-	<button on:click={revert}>revert</button>
+<div class="flex flex-col mb-2">
+	<h2 class="text-slate-800 mb-0">Image</h2>
+	<div class="flex">
+		<span class="text-slate-400 text-xs">{`${c?.width}px / ${c?.height}px`}</span>
+		{#if $settings.repeat}
+			<span class="ml-3 text-slate-400 text-xs"
+				>Sprites {`X: ${spritesCountX} | Y:${spritesCountY}`}</span
+			>
+		{/if}
+	</div>
 </div>
 <canvas id="canvas_1" />
+{#if $settings.repeat}
+	<button class="border border-slate-300 mt-3 px-2" on:click={revert}
+		>Render Sprites Reverted</button
+	>
+{/if}
 <canvas id="canvas_2" />
