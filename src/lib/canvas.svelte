@@ -13,7 +13,7 @@
 	let sprite_h = 0;
 	let gridSize = 20;
 	let xOffset = 0;
-	let globalXOffset: number = 0;
+	let globalXOffset = 0;
 	let yOffset = 0;
 
 	settings.subscribe((v) => {
@@ -78,7 +78,8 @@
 							if (x === 1 && globalXOffset != null) {
 								ctx.strokeRect(globalXOffset * xc + x, yOffset + y, sprite_w - 2, sprite_h - 2);
 							} else {
-								ctx.strokeRect(xOffset * xc + x, yOffset + y, sprite_w - 2, sprite_h - 2);
+                                const xo = (xOffset * xc + x) - (globalXOffset !== null ? xOffset : 0);
+								ctx.strokeRect(xo, yOffset + y, sprite_w - 2, sprite_h - 2);
 							}
 						}
 					}
@@ -112,8 +113,8 @@
 	let x = 0;
 	function revert() {
 		x--;
-		c2.width = image.naturalWidth;
-		c2.height = image.naturalHeight;
+		c2.width = spritesCountX * sprite_w;
+		c2.height = spritesCountY * sprite_h;
 		ctx2.rect(0, 0, c2.width, c2.height);
 
 		ctx2.save();
@@ -121,10 +122,16 @@
 		ctx2.scale(-1, 1);
 
 		for (let x = 0; x <= spritesCountX; x++) {
+            let xo = (xOffset * x + sprite_w * x)
+            if (x === 0 && globalXOffset !== null) {
+                xo = globalXOffset * x + sprite_w * x;
+            }
+
 			for (let y = 0; y <= spritesCountY; y++) {
+                console.log(`Taking ${xo}`);
 				ctx2.drawImage(
 					image,
-					sprite_w * x,
+					xo,
 					y * sprite_h,
 					sprite_w,
 					sprite_h,
@@ -137,7 +144,7 @@
 		}
 
 		ctx2.restore();
-		requestAnimationFrame(revert);
+		// requestAnimationFrame(revert);
 	}
 </script>
 
